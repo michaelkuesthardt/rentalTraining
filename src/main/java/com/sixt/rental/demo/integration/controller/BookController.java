@@ -1,47 +1,55 @@
 package com.sixt.rental.demo.integration.controller;
 
-import com.sixt.rental.demo.domain.Book;
+import com.sixt.rental.demo.domain.BookService;
+import com.sixt.rental.demo.domain.Entity.Book;
+import com.sixt.rental.demo.domain.Entity.Borrower;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
 public class BookController {
 
-    private ArrayList<Book> books = new ArrayList<>() {{
-        add(0, Book.builder().id(UUID.randomUUID()).title("Test 1").isbn("-").build());
-        add(1, Book.builder().id(UUID.randomUUID()).title("Test 2").isbn("-").build());
-        add(2, Book.builder().id(UUID.randomUUID()).title("Test 3").isbn("-").build());
-        add(3, Book.builder().id(UUID.randomUUID()).title("Test 4").isbn("-").build());
-    }};
+    private final BookService bookService;
 
     @GetMapping("books")
     public ResponseEntity list() {
-        return ResponseEntity.ok().body(books);
+        var result = bookService.findAll();
+        return ResponseEntity.ok().body(result);
     }
 
     @GetMapping("books/{bookId}")
-    public ResponseEntity get(@PathVariable int bookId) {
-        if (bookId >= books.size()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity get(@PathVariable UUID bookId) {
+        var result = bookService.getById(bookId);
+        if (result.isPresent()) {
+            return ResponseEntity.ok().body(result.get());
         }
-        return ResponseEntity.ok().body(books.get(bookId));
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("books")
-    public ResponseEntity add(@RequestBody Book book) {
-        books.add(book);
-        return ResponseEntity.ok().build();
+    public ResponseEntity add(@RequestBody Book newBook) {
+        return ResponseEntity.ok().body(bookService.add(newBook));
     }
 
     @DeleteMapping("books/{bookId}")
-    public ResponseEntity remove(@PathVariable int bookId) {
-        if (bookId >= books.size()) {
-            return ResponseEntity.notFound().build();
-        }
-        books.remove(bookId);
+    public ResponseEntity remove(@PathVariable UUID bookId) {
+        bookService.deleteById(bookId);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("books/borrow/{bookId}")
+    public ResponseEntity borrowBook (@PathVariable UUID bookId, @RequestBody Borrower borrower) {
+        bookService.borrowBook(bookId, borrower);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("books/return/{bookId}")
+    public ResponseEntity returnBook (@PathVariable UUID bookId, @RequestBody Borrower borrower) {
+        bookService.returnBook(bookId, borrower);
         return ResponseEntity.ok().build();
     }
 

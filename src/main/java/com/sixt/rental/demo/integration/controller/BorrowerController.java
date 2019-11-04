@@ -1,46 +1,42 @@
 package com.sixt.rental.demo.integration.controller;
 
-import com.sixt.rental.demo.domain.Borrower;
+import com.sixt.rental.demo.domain.BorrowerService;
+import com.sixt.rental.demo.domain.Entity.Borrower;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.UUID;
 
+@RestController
+@RequiredArgsConstructor
 public class BorrowerController {
 
-    private ArrayList<Borrower> borrowers = new ArrayList<>() {{
-        add(0, Borrower.builder().id(UUID.randomUUID()).email("test1@test.com").firstName("Test 1").lastName("Test 1").build());
-        add(1, Borrower.builder().id(UUID.randomUUID()).email("test2@test.com").firstName("Test 2").lastName("Test 2").build());
-        add(2, Borrower.builder().id(UUID.randomUUID()).email("test3@test.com").firstName("Test 3").lastName("Test 3").build());
-        add(3, Borrower.builder().id(UUID.randomUUID()).email("test4@test.com").firstName("Test 4").lastName("Test 4").build());
-    }};
+    private final BorrowerService borrowerService;
 
     @GetMapping("borrowers")
     public ResponseEntity list() {
-        return ResponseEntity.ok().body(borrowers);
+        return ResponseEntity.ok().body(borrowerService.findAll());
     }
 
     @GetMapping("borrowers/{borrowerId}")
-    public ResponseEntity get(@PathVariable int borrowerId) {
-        if (borrowerId >= borrowers.size()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity get(@PathVariable UUID borrowerId) {
+        var result = borrowerService.getById(borrowerId);
+        if (result.isPresent()) {
+            return ResponseEntity.ok().body(result.get());
         }
-        return ResponseEntity.ok().body(borrowers.get(borrowerId));
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("borrowers")
     public ResponseEntity add(@RequestBody Borrower borrower) {
-        borrowers.add(borrower);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(borrowerService.add(borrower));
     }
 
     @DeleteMapping("borrowers/{borrowerId}")
-    public ResponseEntity remove(@PathVariable int borrowerId) {
-        if (borrowerId >= borrowers.size()) {
-            return ResponseEntity.notFound().build();
-        }
-        borrowers.remove(borrowerId);
+    public ResponseEntity remove(@PathVariable UUID borrowerId) {
+        borrowerService.deleteById(borrowerId);
         return ResponseEntity.ok().build();
     }
 }

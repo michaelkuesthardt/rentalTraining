@@ -1,0 +1,22 @@
+version: '2.1'
+services:
+    postgres:
+        image: "postgres:9.6-alpine"
+        volumes:
+        - ./dump:/docker-entrypoint-initdb.d/:ro
+        environment:
+        - POSTGRES_USER=rental
+        - POSTGRES_PASSWORD=rental
+        - POSTGRES_DB=rental
+        healthcheck:
+          test: ['CMD', 'pg_isready', '-U', 'postgres']
+          interval: 10s
+          retries: 3
+          timeout: 1s
+        ports:
+        - "5555:5432"
+    redis:
+        image: "redis:4.0.10"
+        ports:
+        - "6379:6379"
+

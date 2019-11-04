@@ -35,3 +35,26 @@ spring:
     active: production
   application:
     name: "Demo Service"
+  datasource:
+    url: jdbc:postgresql://localhost:5555/rental
+    username: rental
+    password: rental
+  jpa:
+    properties:
+#      uncomment for JPA script creation
+#      javax:
+#        persistence:
+#          schema-generation:
+#            create-source: metadata
+#            scripts:
+#              action: create
+#              create-target: src/main/resources/db/migration/V001__create_tables.sql
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    show-sql: true
+  #   comment if you use flyway - It's not a good idea to rely on automatic creation of migrations
+#    hibernate:
+#      ddl-auto: update
+  flyway:
+    enabled: true
