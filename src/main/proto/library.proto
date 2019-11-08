@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package rental;
+option java_package = "com.sixt.rental.demo.events";
+option java_multiple_files = true;
+
+import "types.proto";
+
+message RawBookEvent {
+    UUID correlation_id = 1;
+    Identifier identifier = 2;
+
+    string title = 3;
+    string isbn = 4;
+
+    repeated Author author = 5;
+
+    Borrower borrower = 6;
+
+    LifecycleType status = 7;
+}

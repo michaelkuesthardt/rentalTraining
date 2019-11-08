@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package rental;
+option java_package = "com.sixt.rental.demo.events";
+option java_multiple_files = true;
+
+message UUID {
+    string value = 1;
+}
+
+message Identifier {
+    string value = 1;
+}
+
+message Author {
+    Identifier identifier = 1;
+    string first_name = 2;
+    string last_name = 3;
+}
+
+message Borrower {
+    Identifier identifier = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string email = 4;
+}
+
+enum LifecycleType {
+    LIFECYCLE_UNKNOWN = 0;
+    LIFECYCLE_ADDED = 1;
+    LIFECYCLE_UPDATED = 2;
+    LIFECYCLE_REMOVED = 3;
+    LIFECYCLE_BORROWED = 4;
+    LIFECYCLE_RETURNED = 5;
+}
