@@ -24,17 +24,25 @@ management:
       system:
         cpu: false
   server:
-    port: 9090
+    port: 9091
 server:
   error:
     whitelabel:
       enabled: false
-  port: 8888
+  port: 8080
 spring:
   profiles:
     active: production
   application:
-    name: "Demo Service"
+    name: "RentalDemo Service"
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      value-serializer: com.sixt.rental.demo.integration.kafka.serde.RawBookEventSerializer
+      acks: all
+      compression-type: lz4
+    listener:
+      ack-mode: manual_immediate
   datasource:
     url: jdbc:postgresql://localhost:5555/rental
     username: rental
@@ -52,9 +60,12 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-    show-sql: true
+    show-sql: false
   #   comment if you use flyway - It's not a good idea to rely on automatic creation of migrations
 #    hibernate:
 #      ddl-auto: update
   flyway:
     enabled: true
+rental-service:
+  topics:
+    event-producer: "book-lifecycle-events"

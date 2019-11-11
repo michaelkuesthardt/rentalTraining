@@ -3,14 +3,14 @@
     <appender name="jsonConsoleAppender" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
             <includeMdcKeyName>correlation_id</includeMdcKeyName>
-            <fieldNames>
-                <timestamp>time</timestamp>
-                <thread>thread_id</thread>
-                <levelValue>[ignore]</levelValue>
-                <version>[ignore]</version>
-                <logger>logger</logger>
-                <stackTrace>stacktrace</stackTrace>
-            </fieldNames>
+<!--            <fieldNames>-->
+<!--                <timestamp>time</timestamp>-->
+<!--                <thread>thread_id</thread>-->
+<!--                <levelValue>[ignore]</levelValue>-->
+<!--                <version>[ignore]</version>-->
+<!--                <logger>logger</logger>-->
+<!--                <stackTrace>stacktrace</stackTrace>-->
+<!--            </fieldNames>-->
         </encoder>
     </appender>
     <root level="INFO">
